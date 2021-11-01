@@ -1,0 +1,15 @@
+body{
+    background-color: #eeeeee;
+}
+
+.removeTextDecoration{
+    text-decoration: none;
+}
+
+.boxShadowSuccess{
+    box-shadow: 0 0 1em rgb(83, 102, 83);
+}
+
+.boxShadowSecondary{
+    box-shadow: 0 0 1em rgb(122, 122, 122);
+}
