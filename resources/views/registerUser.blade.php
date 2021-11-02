@@ -1,13 +1,13 @@
 @extends('layout.site')
 
 @section('js')
-    <script src="{{asset('site/register.js')}}"></script>
+    <script src="{{asset('site/registerUser.js')}}"></script>
 @endsection
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center mb-5">
-            <h2 class="mt-4 text-center text-success">Cadastre-se</h2>
+            <h2 class="mt-4 text-center text-success">Cadastrar Usuário</h2>
             @if (!empty($mensagem['msg']))
                 <div class="row justify-content-center">
                 @if (isset($mensagem['error']) && $mensagem['error'] == false)
@@ -58,7 +58,7 @@
                                 <button type="submit" class="btn btn-success" onclick="return validation()">Cadastrar</button>
                             </div> --}}
                             <div class="d-grid gap-2 d-md-block">
-                                <a href="{{route('home')}}" class="btn btn-danger col-4" onclick="return cancel()">Cancelar</a>
+                                <a href="{{route('user.home')}}" class="btn btn-danger col-4" onclick="return cancel()">Cancelar</a>
                                 <button type="submit" class="btn btn-success col-6" onclick="return validation()">Cadastrar</button>
                               </div>
                         </form>                     

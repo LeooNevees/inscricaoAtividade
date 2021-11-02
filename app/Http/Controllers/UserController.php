@@ -11,7 +11,7 @@ use Exception;
 
 class UserController extends Controller
 {
-    public function index(string $message = null)
+    public function home(string $message = null)
     {
         $mensagem = ['msg' => !empty($message) ? Crypt::decrypt($message) : ''];
         return view('user', compact('mensagem'));
@@ -28,7 +28,7 @@ class UserController extends Controller
             return redirect()->route('home');
         }
         $msg = Crypt::encrypt('Credenciais Inválidas');
-        return redirect()->route('user.index', ['msg' => $msg]);
+        return redirect()->route('user.home', ['msg' => $msg]);
     }
 
     public function logout()
@@ -43,7 +43,7 @@ class UserController extends Controller
             'error' => !empty($message) && strpos(Crypt::decrypt($message), 'sucesso') !== false ? false : true,
             'msg' => !empty($message) ? Crypt::decrypt($message) : ''
         ];
-        return view('register', compact('mensagem'));
+        return view('registerUser', compact('mensagem'));
     }
 
     public function createAccount(Request $req)
@@ -60,20 +60,14 @@ class UserController extends Controller
             //     throw new Exception('E-mail já cadastrado');
             // }
 
-            if(User::where('email', '=', $dados['email'])->count()){
+            if(User::where('email', '=', $retorno['dados']['email'])->count()){
                 throw new Exception('E-mail já cadastrado');
             }
 
-            if(User::where('document_number', '=', $dados['document_number'])->count()){
+            if(User::where('document_number', '=', $retorno['dados']['document_number'])->count()){
                 throw new Exception('CPF já cadastrado');
             }
 
-            // if(DB::table('usuarios')->where('cpf', $dados['cpf'])->count()){
-            //     return 'E-mail já cadastrado';
-            //     throw new Exception('CPF já cadastrado');
-            // }
-            
-            // dd($retorno['dados']);
             User::create($retorno['dados']);
             $msg = Crypt::encrypt('Usuário cadastrado com sucesso!');
             return redirect()->route('user.register', $msg);

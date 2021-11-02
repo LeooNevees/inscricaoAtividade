@@ -17,11 +17,13 @@ Route::get('/', ['as' => 'home', 'uses' => function(){
     return view('home');
 }]);
 
-Route::get('/activity', ['as' => 'activity.home', 'uses' => function(){
-    return view('activity');
-}]);
+Route::get('/activity/home/{msg?}', ['as' => 'activity.home', 'uses' => 'App\Http\Controllers\ActivityController@home'])->middleware('auth');
 
-Route::get('/user/home/{msg?}', ['as' => 'user.home', 'uses' => 'App\Http\Controllers\UserController@index']);
+Route::get('/activity/register/{msg?}', ['as' => 'activity.register', 'uses' => 'App\Http\Controllers\ActivityController@registerActivity'])->middleware('auth');
+
+Route::post('/activity/create', ['as' => 'activity.create', 'uses' => 'App\Http\Controllers\ActivityController@createActivity']);
+
+Route::get('/user/home/{msg?}', ['as' => 'user.home', 'uses' => 'App\Http\Controllers\UserController@home']);
 
 Route::get('/user/logout', ['as' => 'user.logout', 'uses' => 'App\Http\Controllers\UserController@logout']);
 

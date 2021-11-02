@@ -12,7 +12,7 @@
                     <a class="nav-link active" aria-current="page" href="{{route('home')}}">Início</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">Atividades</a>
+                    <a class="nav-link" href="{{route('activity.home')}}">Atividades</a>
                 </li>
                 @if (Auth::check())
                     <li class="nav-item dropdown">
@@ -20,7 +20,7 @@
                         <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#">Configurações</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="">Logout</a></li>
+                            <li><a href="{{route('user.logout')}}" class="dropdown-item text-danger" href="">Logout</a></li>
                         </ul>
                     </li>
                 @else

@@ -17,6 +17,7 @@ class CreateUserTypesTable extends Migration
             $table->id('id');
             $table->string('title', 120);
             $table->text('description');
+            $table->timestamp('updated_at')->nullable();
             $table->dateTime('created_at');
             $table->char('situation', 1);
         });
