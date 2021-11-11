@@ -18,7 +18,3 @@ function cancel() {
     }
     return true;
 }
-
-function check() {
-    
-}

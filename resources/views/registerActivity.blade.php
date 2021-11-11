@@ -25,7 +25,7 @@
             <div class="col-md-6 col-lg-6 mt-2">
                 <div class="card border-success mb-3 text-center boxShadowSuccess">
                     <div class="card-header">Informações</div>
-                    <div class="card-body">
+                    <div class="card-body"> 
                         <form action="{{route('activity.create')}}" method="POST">
                             {{csrf_field() }}
                             <div class="form-floating mb-3">
@@ -35,17 +35,16 @@
                             <div class="form-floating">
                                 <textarea class="form-control" placeholder="Descrição" id="description" name="description" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Descrição</label>
-                              </div>
+                            </div>
                             {{-- <hr> --}}
                             <div class="d-grid gap-2 d-md-block mt-4">
                                 <a href="{{route('activity.home')}}" class="btn btn-danger col-4" onclick="return cancel()">Cancelar</a>
                                 <button type="submit" class="btn btn-success col-6" onclick="return validation()">Cadastrar</button>
-                              </div>
-                        </form>                     
+                            </div>
+                        </form>                  
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 @endsection

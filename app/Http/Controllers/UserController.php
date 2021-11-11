@@ -6,17 +6,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use App\Services\Validation;
+use App\Services\UserService;
 use Exception;
 
 class UserController extends Controller
 {
-    public function home(string $message = null)
-    {
-        $mensagem = ['msg' => !empty($message) ? Crypt::decrypt($message) : ''];
-        return view('user', compact('mensagem'));
-    }
-
     public function entry(Request $req)
     {
         $dados = $req->all();
@@ -27,8 +21,9 @@ class UserController extends Controller
             // return redirect()->intended('home');
             return redirect()->route('home');
         }
-        $msg = Crypt::encrypt('Credenciais Inválidas');
-        return redirect()->route('user.home', ['msg' => $msg]);
+
+        $mensagem['msg'] = 'Credenciais Inválidas';
+        return view('user', compact('mensagem'));
     }
 
     public function logout()
@@ -37,43 +32,27 @@ class UserController extends Controller
         return redirect()->route('home');
     }
 
-    public function registerAccount(string $message = null)
-    {
-        $mensagem = [
-            'error' => !empty($message) && strpos(Crypt::decrypt($message), 'sucesso') !== false ? false : true,
-            'msg' => !empty($message) ? Crypt::decrypt($message) : ''
-        ];
-        return view('registerUser', compact('mensagem'));
-    }
-
     public function createAccount(Request $req)
     {
         try {
-            
             $dados = (array) $req->all();
-            $retorno = Validation::accountValidation($dados);
+            $retorno = UserService::accountValidation($dados);
             if($retorno === false){
                 throw new Exception($retorno['mensagem']);
             }        
-            
-            // if(DB::table('usuarios')->where('email', $dados['email'])->count()){
-            //     throw new Exception('E-mail já cadastrado');
-            // }
-
-            if(User::where('email', '=', $retorno['dados']['email'])->count()){
-                throw new Exception('E-mail já cadastrado');
-            }
-
-            if(User::where('document_number', '=', $retorno['dados']['document_number'])->count()){
-                throw new Exception('CPF já cadastrado');
-            }
 
             User::create($retorno['dados']);
-            $msg = Crypt::encrypt('Usuário cadastrado com sucesso!');
-            return redirect()->route('user.register', $msg);
+            $mensagem = [
+                'error' => false,
+                'msg' => 'Usuário cadastrado com sucesso!'
+            ];
+            return view('registerUser', compact('mensagem'));
         } catch (Exception $ex) {
-            $msg = Crypt::encrypt($ex->getMessage());
-            return redirect()->route('user.register', $msg);
+            $mensagem = [
+                'error' => true,
+                'msg' => $ex->getMessage()
+            ];
+            return view('registerUser', compact('mensagem'));
         }
     }
 }

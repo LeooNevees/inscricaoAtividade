@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class Validation
+class UserService
 {
     public static function accountValidation(Array $dados)
     {
@@ -50,6 +50,14 @@ class Validation
                 }
             }
 
+            if(User::where('email', '=', $dados['email'])->count()){
+                throw new Exception('E-mail já cadastrado');
+            }
+
+            if(User::where('document_number', '=', $dados['document_number'])->count()){
+                throw new Exception('CPF já cadastrado');
+            }
+
             $dados['user_type'] = 1;
             $dados['created_at'] = date('Y-m-d H:i:s');
             $dados['situation'] = 'A';
@@ -66,50 +74,4 @@ class Validation
             ];
         }
     }
-
-    public static function activityValidation(Array $dados)
-    {
-        try {
-            if(!count($dados)){
-                throw new Exception('Necessário fornecer os dados do formulário');
-            }
-            $validacoes = ['title', 'description'];
-            //Validação campos obrigatórios
-            foreach ($validacoes as $campo) {
-                if(!isset($dados[$campo])){
-                    throw new Exception("$campo não fornecido");
-                }
-
-                switch (true) {
-                    case $campo == 'title':
-                        $dados[$campo] = mb_strtoupper($dados[$campo]);
-                        break;
-                    case $campo == 'description':
-                        $dados[$campo] = mb_strtoupper($dados[$campo]);
-                        break;
-                    default:
-                        break;
-                }
-
-                if(empty($dados[$campo])){
-                    throw new Exception("Campo $campo inválido");
-                }
-            }
-
-            $dados['created_at'] = date('Y-m-d H:i:s');
-            $dados['situation'] = 'A';
-
-            return [
-                'erro' => false,
-                'dados' => $dados
-            ];
-        } catch (Exception $ex) {
-            dd($ex->getMessage());
-            return [
-                'erro' => true,
-                'mensagem' => $ex->getMessage()
-            ];
-        }
-    }
-
 }

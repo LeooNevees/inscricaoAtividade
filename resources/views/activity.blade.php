@@ -1,13 +1,29 @@
 @extends('layout.site')
 
+@section('js')
+    <script src="{{asset('site/activity.js')}}"></script>
+@endsection
+
 @section('content')
     <div class="container">
         <div class="row">
             <h2 class="mt-5 text-center text-success">Atividades</h2>
+            @if (!empty($mensagem['msg']))
+                <div class="row justify-content-center">
+                @if (isset($mensagem['error']) && $mensagem['error'] == false)
+                    <div class="alert alert-success col-md-6 col-lg-6 mt-3 text-center" role="alert" style="height: 50px">
+                        {{$mensagem['msg']}}
+                    </div>
+                @else
+                    <div class="alert alert-danger col-md-6 col-lg-6 mt-3 text-center" role="alert" style="height: 50px">
+                        {{$mensagem['msg']}}
+                    </div>
+                @endif
+                </div>
+            @endif
             <div class="card mt-5 text-center boxShadowSecondary">
-
-                @if (isset($atividades) && count($atividades))
-                    <div class="card-body">
+                <div class="card-body">
+                    @if (isset($mensagem['activities']) && count($mensagem['activities']))
                         <table class="table">
                             <thead>
                             <tr>
@@ -19,24 +35,46 @@
                             </tr>
                             </thead>
                             <tbody>
-                                @foreach ($atividades as $atividade)
-                                    <tr id="tr_{{$atividade->id}}">
-                                        <td id="td_{{$atividade->id}}"><i class="bi bi-check-circle text-success h5" title="Selecionar" style="cursor: pointer" onclick=""></i></td>
+                                @foreach ($mensagem['activities'] as $atividade)
+                                    @if (mb_strpos($mensagem['userRegistration'], $atividade->id) !== false)
+                                        <tr style="background-color: #E0F8E6">
+                                        <td><i class="bi bi-check-circle-fill text-success h5" title="Inscrito"></i></td>
+                                    @else
+                                            <tr>
+                                        <td><a class="bi bi-check-circle text-success h5" href="{{route('registration.userRegistration', $atividade->id)}}" title="Selecionar" onclick="return registerActivity({{$atividade->id}})"></a></td>
+                                    @endif
                                         <td scope="row">{{$atividade->id}}</td>
-                                        <td>{{ucfirst(strtolower($atividade->title))}}</td>
+                                        <td>{{ucfirst(mb_strtolower($atividade->title))}}</td>
                                         <td>2</td>
                                         <td>
-                                            <i class="bi bi-info-circle-fill text-primary h5" title="Detalhes" style="cursor: pointer"></i>
-                                            <a href="#" class="bi bi-pencil-square text-danger h5" title="Editar"></a>
+                                            <i class="bi bi-info-circle-fill text-primary h5" title="Detalhes" style="cursor: pointer" onclick="openModal('{{ucfirst(mb_strtolower($atividade->title))}}', '{{ucfirst(mb_strtolower($atividade->description))}}')"></i>
+                                            <a href="{{route('activity.inactivate', $atividade->id)}}" class="bi bi-trash-fill text-danger h5" title="Inativar" onclick="return confirmInactivate()"></a>
                                         </td>
                                     </tr>
                                 @endforeach
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalDescricao" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="tituloAtividade">Title</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body" id="descricaoAtividade">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </tbody>
                         </table>
-                        <a href="{{route('activity.register')}}" class="btn btn-success">Novo</a>
-                    </div>  
-                @endif
-        
+                    @endif
+                    <a href="{{route('activity.register')}}" class="btn btn-success">Novo</a>
+                </div>  
             </div>
         </div>
     </div>
